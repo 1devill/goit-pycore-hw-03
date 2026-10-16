@@ -79,31 +79,35 @@ def get_upcoming_birthdays(users):
         
     today_date = datetime.today().date()
     for user in users:
-        if not user.get("name") or not user.get("birthday") or not isinstance(user["name"], str) or not isinstance(user["birthday"], str):
-            print('User should have name and birthday as strings')
+        try:
+            if not user.get("name") or not user.get("birthday") or not isinstance(user["name"], str) or not isinstance(user["birthday"], str):
+                print('User should have name and birthday as strings')
+                upcoming_birthdays = []
+                break
+
+            user_bd_date = datetime.strptime(user["birthday"], "%Y.%m.%d").date()
+            next_birthday = datetime(today_date.year, user_bd_date.month, user_bd_date.day).date()
+            if next_birthday < today_date:
+                next_birthday = datetime(
+                    today_date.year + 1,
+                    user_bd_date.month,
+                    user_bd_date.day
+                ).date()
+
+            days_until_birthday = (next_birthday - today_date).days
+            if days_until_birthday <= DAYS_BD_MAX_RANGE:
+                birthday_weekday = next_birthday.weekday()
+
+                if birthday_weekday == SATURDAY:
+                    next_birthday = next_birthday + timedelta(days=2)
+                elif birthday_weekday == SUNDAY:
+                    next_birthday = next_birthday + timedelta(days=1)
+
+                upcoming_birthdays.append({"name": user["name"], "congratulation_date": next_birthday.strftime("%Y.%m.%d")}) 
+        except ValueError:
+            print("Birthday date is not in required format - YYYY.MM.DD")
             upcoming_birthdays = []
             break
-
-        user_bd_date = datetime.strptime(user["birthday"], "%Y.%m.%d").date()
-        next_birthday = datetime(today_date.year, user_bd_date.month, user_bd_date.day).date()
-        if next_birthday < today_date:
-            next_birthday = datetime(
-                today_date.year + 1,
-                user_bd_date.month,
-                user_bd_date.day
-            ).date()
-
-        days_until_birthday = (next_birthday - today_date).days
-        if days_until_birthday <= DAYS_BD_MAX_RANGE:
-            birthday_weekday = next_birthday.weekday()
-
-            if birthday_weekday == SATURDAY:
-                next_birthday = next_birthday + timedelta(days=2)
-            elif birthday_weekday == SUNDAY:
-                next_birthday = next_birthday + timedelta(days=1)
-
-            upcoming_birthdays.append({"name": user["name"], "congratulation_date": next_birthday.strftime("%Y.%m.%d")}) 
-
     return upcoming_birthdays
 
 
@@ -140,5 +144,10 @@ print(get_upcoming_birthdays([
 
 print(get_upcoming_birthdays([
     {"name": "John Doe", "birthday": 12412412},
+    {"name": "Jane Smith", "birthday": "1990.09.30"}
+]))
+
+print(get_upcoming_birthdays([
+    {"name": "John Doe", "birthday": "1985106"},
     {"name": "Jane Smith", "birthday": "1990.09.30"}
 ]))
