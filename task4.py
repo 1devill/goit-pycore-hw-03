@@ -86,13 +86,19 @@ def get_upcoming_birthdays(users):
                 break
 
             user_bd_date = datetime.strptime(user["birthday"], "%Y.%m.%d").date()
-            next_birthday = datetime(today_date.year, user_bd_date.month, user_bd_date.day).date()
+            try:
+                next_birthday = datetime(today_date.year, user_bd_date.month, user_bd_date.day).date()
+            except ValueError:
+                next_birthday = datetime(today_date.year, 3, 1).date()
             if next_birthday < today_date:
-                next_birthday = datetime(
-                    today_date.year + 1,
-                    user_bd_date.month,
-                    user_bd_date.day
-                ).date()
+                try:
+                    next_birthday = datetime(
+                        today_date.year + 1,
+                        user_bd_date.month,
+                        user_bd_date.day
+                    ).date()
+                except ValueError:
+                    next_birthday = datetime(today_date.year + 1, 3, 1).date()
 
             days_until_birthday = (next_birthday - today_date).days
             if days_until_birthday <= DAYS_BD_MAX_RANGE:
@@ -150,4 +156,8 @@ print(get_upcoming_birthdays([
 print(get_upcoming_birthdays([
     {"name": "John Doe", "birthday": "1985106"},
     {"name": "Jane Smith", "birthday": "1990.09.30"}
+]))
+
+print(get_upcoming_birthdays([
+    {"name": "Leap Day Larry", "birthday": "2000.02.29"},
 ]))

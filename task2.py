@@ -55,11 +55,14 @@ def get_numbers_ticket(min, max, quantity):
             print("Min number should be less than max")
             return []
 
+        if quantity <= 0:
+            return []
+
         if quantity > max - min + 1:
             print("Quantity should be beetween min and max")
             return []
 
-        return random.sample(range(min, max + 1), quantity)
+        return random.sample(range(min, max + 1), quantity).sort()
     except TypeError:
         print("All passed arguments should be numbers")
         return []
@@ -72,3 +75,5 @@ print(get_numbers_ticket(1, 10, 10))
 print(get_numbers_ticket(1, 10, 11))
 print(get_numbers_ticket('1', 10, '11'))
 print(get_numbers_ticket(['1', 10, '11'], 1, '3'))
+print(get_numbers_ticket(1, 10, 0))
+print(get_numbers_ticket(1, 10, -20))

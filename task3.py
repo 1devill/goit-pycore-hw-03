@@ -65,6 +65,7 @@ def normalize_phone(phone_number):
         print("Phone number passed should be a string")
         return
 
+    phone_number = phone_number.strip()
     normalized_phone = re.sub(r"(?!^)\+|[^\d+]", "", phone_number)
     if normalized_phone.startswith('0'):
         normalized_phone = f"+38{normalized_phone}"

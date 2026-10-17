@@ -32,13 +32,11 @@ from datetime import datetime
 
 def get_days_from_today(date):
     try:
-        now = datetime.today()
-        date_obj = datetime.strptime(date, "%Y-%m-%d")
+        now = datetime.today().date()
+        date_obj = datetime.strptime(date, "%Y-%m-%d").date()
         return (now - date_obj).days
-    except ValueError:
-        print("Wrong format of passed date, required format is - 'YYYY-MM-DD'")
-    except TypeError:
-        print("Wrong type of passed date, required format is string - 'YYYY-MM-DD'")
+    except (ValueError, TypeError):
+        print("Wrong format of passed date, required string, format is - 'YYYY-MM-DD'")
 
 print(get_days_from_today("2026-10-01"))
 print(get_days_from_today("2026-12-30"))
